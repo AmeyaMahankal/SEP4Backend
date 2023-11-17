@@ -20,7 +20,9 @@ app.use(cors())
 app.use(express.json());
 
 const routes = require('./routes/routes');
+const temps = require('./routes/Temperatures');
 app.use('/api', routes)
+app.use('/temp', temps)
 
 app.get("/", (req, res) => {
     res.send("<h2>Express Server running on port 3000</h2>")
