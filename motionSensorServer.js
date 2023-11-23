@@ -2,7 +2,6 @@ const express = require('express');
 const net = require('net');
 const mongoose = require('mongoose');
 const axios = require('axios');
-const motionModel = require('./model/MotionModel');
 
 const app = express();
 
