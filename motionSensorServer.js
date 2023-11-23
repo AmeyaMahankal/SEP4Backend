@@ -17,14 +17,11 @@ const sendMotionDataToClient = async (socket) => {
       const response = await axios.get('http://localhost:3000/motion/getMotion');
       const detectionValue = response.data.detection;
 
-      // Log to confirm that data is being fetched
       console.log(`Fetched motion data from Express server: ${detectionValue}`);
 
-      // Send the motion data to the connected TCP client as JSON
       const jsonData = JSON.stringify({ detection: detectionValue });
       socket.write(jsonData);
 
-      // Introduce a delay before sending the next data (adjust as needed)
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
   } catch (error) {
@@ -52,7 +49,4 @@ app.get('/status', (req, res) => {
   res.json({ status: 'Server is running' });
 });
 
-const expressPort = 4000;
-app.listen(expressPort, () => {
-  console.log(`Express Server running on port ${expressPort}`);
-});
+
