@@ -1,33 +1,29 @@
 const express = require('express');
-const lightModel = require('../model/LightLevelModel');
+const lightService = require('../services/lightService');
 
-const router = express.Router()
+const router = express.Router();
 
-//Post method
-router.post('/post', async(req, res)=>
-{
-    const data= new lightModel(
-        {
-        lightLevel: req.body.lightLevel,
-        time: req.body.time
-    }
-    )
+// Post method
+router.post('/post', async (req, res) => {
+  const { lightLevel, time } = req.body;
 
+  try {
+    const dataToSave = await lightService.saveLightLevel(lightLevel, time);
+    res.status(200).json(dataToSave);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get all light levels
+router.get('/getLightLevels', async (req, res) => {
     try {
-        const dataToSave = await data.save();
-        res.status(200).json(data)
-    } catch(error) {
-        res.status(200).json(dataToSave)
+      const data = await lightService.getAllLightLevels();
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-})
-//GetAllMethod
-router.get('/getLightLevels' , async (req, res)=>{
-    try {
-        const data= await lightModel.find().sort({ time: -1 }).limit(1);
-        res.json(data)
-    }catch(error) {
-
-    }
-})
+  });
+  
 
 module.exports = router;
