@@ -45,7 +45,7 @@ router.patch('/updateMotion', async (req, res) => {
     try {
         // Connect to the TCP server
         const client = new net.Socket();
-        const serverAddress = '10.154.192.23';
+        const serverAddress = '192.168.214.98';
         const serverPort = 23;
 
         client.connect(serverPort, serverAddress, () => {

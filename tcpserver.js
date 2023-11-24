@@ -21,7 +21,7 @@ const server = net.createServer((socket) => {
                 }
             });
         }
-        else if (data.toString() == "3IotChanged") {
+        else if (data.includes("4SecurityStatusChanged")) {
 
             clients.forEach((client) => {
                 if (client !== socket) {
@@ -131,7 +131,7 @@ const server = net.createServer((socket) => {
 
 });
 
-const host = "10.154.192.23"; //ip
+const host = "192.168.214.98"; //ip
 const port = 23; //port
 
 server.listen(port, host, () => {
