@@ -1,5 +1,5 @@
 const express = require('express');
-const lightService = require('../services/lightService');
+const lightService = require('../services/LightLevelService');
 
 const router = express.Router();
 

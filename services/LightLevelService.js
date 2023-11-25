@@ -12,7 +12,7 @@ class LightService {
         }
       }
     
-      async getAllLightLevel() {
+      async getAllLightLevels() {
         try {
           const data = await lightModel.find().sort({ time: -1 });
           return data;
