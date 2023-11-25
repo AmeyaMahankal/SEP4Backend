@@ -131,7 +131,7 @@ const server = net.createServer((socket) => {
 
 });
 
-const host = "192.168.214.98"; //ip
+const host = "192.168.1.95"; //ip
 const port = 23; //port
 
 server.listen(port, host, () => {

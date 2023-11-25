@@ -45,7 +45,7 @@ router.patch('/updateMotion', async (req, res) => {
     try {
         // Connect to the TCP server
         const client = new net.Socket();
-        const serverAddress = '192.168.214.98';
+        const serverAddress = '192.168.1.95';
         const serverPort = 23;
 
         client.connect(serverPort, serverAddress, () => {
@@ -62,12 +62,12 @@ router.patch('/updateMotion', async (req, res) => {
 
             if (data == "4SecurityStatusChanged") {
                 try {
-                    const { detection } = req.body;
+
 
                     const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
 
                     if (latestMotionData) {
-                        latestMotionData.detection = detection;
+                        latestMotionData.detection = !latestMotionData.detection;
                         await latestMotionData.save();
 
                         res.json({ message: 'Motion status updated successfully' });
