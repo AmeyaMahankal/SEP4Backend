@@ -97,20 +97,7 @@ const server = net.createServer((socket) => {
         
         
         */
-        const endpointurl = ""
-        /*
-                try {
-                    const response = await axios.post("http://localhost:3000/api/post", {
-                        "name": "plswork",
-                        "age": temperature
-                    });
-        
-                    console.log("Data sent to the endpoint:", response.data);
-                } catch (error) {
-                    console.error("Error sending data to the endpoint:", error);
-                }
-        
-        */
+
     });
 
     socket.on("end", () => {
