@@ -3,6 +3,8 @@ const axios = require("axios");
 require('dotenv').config();
 const mongoose = require('mongoose')
 const mongoString = process.env.DATABASE_URL
+const motionDetectLogic = require('./TCPLogic/MotionDetectionApplication')
+
 
 mongoose.connect(mongoString);
 const database = mongoose.connection
@@ -43,14 +45,7 @@ const server = net.createServer((socket) => {
             });
         }
         else if (data.includes("MotionDetected")) {
-            try {
-                const response = await axios.post("http://localhost:3000/motdetect/postDetect", {
-                });
-                console.log("Data sent to the endpoint:", response.data);
-            } catch (error) {
-                console.error("Error sending data to the endpoint:", error);
-            }
-
+            motionDetectLogic();
         }
 
         //T=24.1/H=41/L=833
