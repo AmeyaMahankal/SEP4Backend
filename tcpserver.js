@@ -1,7 +1,20 @@
 const net = require("net");
-const mongoose = require('mongoose')
 const axios = require("axios");
+require('dotenv').config();
+const mongoose = require('mongoose')
 const mongoString = process.env.DATABASE_URL
+
+mongoose.connect(mongoString);
+const database = mongoose.connection
+
+database.on('error', (error) => {
+    console.log(error)
+})
+
+database.once('connected', () => {
+    console.log('Database Connected');
+})
+
 
 const clients = [];
 
@@ -28,6 +41,16 @@ const server = net.createServer((socket) => {
                     client.write("4SecurityStatusChanged")
                 }
             });
+        }
+        else if (data.includes("MotionDetected")) {
+            try {
+                const response = await axios.post("http://localhost:3000/motdetect/postDetect", {
+                });
+                console.log("Data sent to the endpoint:", response.data);
+            } catch (error) {
+                console.error("Error sending data to the endpoint:", error);
+            }
+
         }
 
         //T=24.1/H=41/L=833
