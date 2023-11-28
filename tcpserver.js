@@ -1,7 +1,23 @@
 const net = require("net");
-const mongoose = require('mongoose')
 const axios = require("axios");
+require('dotenv').config();
+const mongoose = require('mongoose')
 const mongoString = process.env.DATABASE_URL
+const motionDetectLogic = require('./TCPLogic/MotionDetectionApplication')
+const MotionModel = require('./model/MotionModel');
+
+
+mongoose.connect(mongoString);
+const database = mongoose.connection
+
+database.on('error', (error) => {
+    console.log(error)
+})
+
+database.once('connected', () => {
+    console.log('Database Connected');
+})
+
 
 const clients = [];
 
@@ -14,20 +30,33 @@ const server = net.createServer((socket) => {
     socket.on("data", async (data) => {
         console.log(`Received from client: ${data.toString()}`);
 
-        if (data.toString() == "1ChangeSecurityStatus") {
+        if (data.toString() == "ChangeSecurityStatus") {
             clients.forEach((client) => {
                 if (client !== socket) {
-                    client.write("2iotplease");
+                    client.write("ChangeSecurityStatus");
                 }
             });
         }
-        else if (data.includes("4SecurityStatusChanged")) {
+        else if (data.includes("SSCRemote")) {
 
             clients.forEach((client) => {
                 if (client !== socket) {
-                    client.write("4SecurityStatusChanged")
+                    client.write("SSCRemote")
                 }
+
             });
+        }
+        else if (data.includes("SSCLocal")) {
+            const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
+
+            if (latestMotionData) {
+                latestMotionData.detection = !latestMotionData.detection;
+                await latestMotionData.save();
+            }
+
+        }
+        else if (data.includes("MOTION DETECTED")) {
+            motionDetectLogic();
         }
 
         //T=24.1/H=41/L=833
@@ -97,20 +126,7 @@ const server = net.createServer((socket) => {
         
         
         */
-        const endpointurl = ""
-        /*
-                try {
-                    const response = await axios.post("http://localhost:3000/api/post", {
-                        "name": "plswork",
-                        "age": temperature
-                    });
-        
-                    console.log("Data sent to the endpoint:", response.data);
-                } catch (error) {
-                    console.error("Error sending data to the endpoint:", error);
-                }
-        
-        */
+
     });
 
     socket.on("end", () => {
