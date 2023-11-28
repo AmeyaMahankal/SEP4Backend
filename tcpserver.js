@@ -4,6 +4,7 @@ require('dotenv').config();
 const mongoose = require('mongoose')
 const mongoString = process.env.DATABASE_URL
 const motionDetectLogic = require('./TCPLogic/MotionDetectionApplication')
+const MotionModel = require('./model/MotionModel');
 
 
 mongoose.connect(mongoString);
@@ -29,22 +30,32 @@ const server = net.createServer((socket) => {
     socket.on("data", async (data) => {
         console.log(`Received from client: ${data.toString()}`);
 
-        if (data.toString() == "1ChangeSecurityStatus") {
+        if (data.toString() == "ChangeSecurityStatus") {
             clients.forEach((client) => {
                 if (client !== socket) {
-                    client.write("2iotplease");
+                    client.write("ChangeSecurityStatus");
                 }
             });
         }
-        else if (data.includes("4SecurityStatusChanged")) {
+        else if (data.includes("SSCRemote")) {
 
             clients.forEach((client) => {
                 if (client !== socket) {
-                    client.write("4SecurityStatusChanged")
+                    client.write("SSCRemote")
                 }
+
             });
         }
-        else if (data.includes("MotionDetected")) {
+        else if (data.includes("SSCLocal")) {
+            const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
+
+            if (latestMotionData) {
+                latestMotionData.detection = !latestMotionData.detection;
+                await latestMotionData.save();
+            }
+
+        }
+        else if (data.includes("MOTION DETECTED")) {
             motionDetectLogic();
         }
 
@@ -136,7 +147,7 @@ const server = net.createServer((socket) => {
 
 });
 
-const host = "192.168.1.95"; //ip
+const host = "192.168.214.98"; //ip
 const port = 23; //port
 
 server.listen(port, host, () => {

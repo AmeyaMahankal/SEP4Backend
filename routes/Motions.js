@@ -45,14 +45,14 @@ router.patch('/updateMotion', async (req, res) => {
     try {
         // Connect to the TCP server
         const client = new net.Socket();
-        const serverAddress = '192.168.1.95';
+        const serverAddress = '192.168.214.98';
         const serverPort = 23;
 
         client.connect(serverPort, serverAddress, () => {
             console.log('Connected to TCP server');
 
             // Send a message to the TCP server
-            client.write('1ChangeSecurityStatus');
+            client.write('ChangeSecurityStatus');
         });
 
         // Set up event handlers for data received from the TCP server
@@ -60,7 +60,7 @@ router.patch('/updateMotion', async (req, res) => {
             // Print the received data to the console
             console.log('Received data from TCP server:', data.toString());
 
-            if (data == "4SecurityStatusChanged") {
+            if (data == "SSCRemote") {
                 try {
 
 
