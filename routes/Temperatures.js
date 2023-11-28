@@ -1,34 +1,28 @@
 const express = require('express');
-const tempModel = require('../model/TemperatureModel');
+const tempService = require('../services/TemperatureService');
 
 const router = express.Router()
 
 router.post('/post', async (req, res) => {
+    const { temperature, time} = req.body;
 
-    const data = new tempModel(
-        {
-            temperature: req.body.temperature,
-            time: req.body.time
-        }
-    )
-
-    try {
-        const dataToSave = await data.save();
-        res.status(200).json(data)
-    } catch (error) {
-        res.status(200).json(dataToSave)
+    try{
+        const dataToSave = await tempService.saveTemperature(temperature, time);
+        res.status(200).json(dataToSave);
+    }catch (error) {
+        res.status(500).json({error: error.message});
     }
+});
 
-})
 
-//Get all Method
 router.get('/getTemperatures', async (req, res) => {
-    try {
-        const data = await tempModel.find().sort({ time: -1 }).limit(1);
-        res.json(data)
-    } catch (error) {
-
+    try{
+        const data = await tempService.getAllTemperatures();
+        res.json(data);
+    }catch (error) {
+        res.status(500).json({ error: error.message});
     }
-})
+});
+
 
 module.exports = router;
