@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const routes = require('./routes/JWTs');
+const routes = require('./routes/PassJWTs');
 
 const app = express();
 const port = 3002;

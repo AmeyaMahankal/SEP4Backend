@@ -24,7 +24,7 @@ const temps = require('./routes/Temperatures');
 const humid = require('./routes/Humidities');
 const lights = require('./routes/LightLevels');
 const motion = require('./routes/Motions');
-const jwt = require('./routes/JWTs');
+const jwt = require('./routes/PassJWTs');
 
 app.use('/api', routes)
 app.use('/temp', temps)
