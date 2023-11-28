@@ -23,12 +23,16 @@ const temps = require('./routes/Temperatures');
 const humid = require('./routes/Humidities');
 const lights = require('./routes/LightLevels');
 const motion = require('./routes/Motions');
+const motdetect = require('./routes/MotionDetect');
 const artifacts = require('./routes/Artifacts');
+
 app.use('/temp', temps)
 app.use('/light', lights)
 app.use('/humid', humid)
 app.use('/motion', motion)
+app.use('/motdetect', motdetect)
 app.use('/artifacts', artifacts)
+
 
 app.get("/", (req, res) => {
     res.send("<h2>Express Server running on port 3000</h2>")

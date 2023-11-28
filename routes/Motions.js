@@ -52,7 +52,7 @@ router.patch('/updateMotion', async (req, res) => {
             console.log('Connected to TCP server');
 
             // Send a message to the TCP server
-            client.write('1ChangeSecurityStatus');
+            client.write('ChangeSecurityStatus');
         });
 
         // Set up event handlers for data received from the TCP server
@@ -60,14 +60,14 @@ router.patch('/updateMotion', async (req, res) => {
             // Print the received data to the console
             console.log('Received data from TCP server:', data.toString());
 
-            if (data == "4SecurityStatusChanged") {
+            if (data == "SSCRemote") {
                 try {
-                    const { detection } = req.body;
+
 
                     const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
 
                     if (latestMotionData) {
-                        latestMotionData.detection = detection;
+                        latestMotionData.detection = !latestMotionData.detection;
                         await latestMotionData.save();
 
                         res.json({ message: 'Motion status updated successfully' });
