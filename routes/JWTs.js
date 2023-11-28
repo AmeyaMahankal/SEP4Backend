@@ -16,7 +16,16 @@ router.post('/login', async (req, res) => {
 
     if (foundPin) {
       const token = jwt.sign({ pin: foundPin.pin }, secretKey, { expiresIn: '1h' });
-      res.json({ token });
+
+      // Automatically call the protected route using the generated token
+      jwt.verify(token, secretKey, (err, decoded) => {
+        if (err) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        // Token is valid
+        res.json({ message: 'Login successful', token, protectedData: { pin: decoded.pin } });
+      });
     } else {
       res.status(401).json({ error: 'Invalid PIN' });
     }
@@ -26,19 +35,5 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Example protected endpoint that requires a valid JWT
-router.get('/protected', (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
-
-  // Verify the token
-  jwt.verify(token, secretKey, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    // Token is valid
-    res.json({ message: 'Protected resource', pin: decoded.pin });
-  });
-});
 
 module.exports = router;
