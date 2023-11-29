@@ -4,6 +4,7 @@ require('dotenv').config();
 const mongoose = require('mongoose')
 const mongoString = process.env.DATABASE_URL
 const motionDetectLogic = require('./TCPLogic/MotionDetectionApplication')
+const conditionLogic = require('./TCPLogic/ConditionsApplication')
 const MotionModel = require('./model/MotionModel');
 
 
@@ -57,6 +58,10 @@ const server = net.createServer((socket) => {
         }
         else if (data.includes("MOTION DETECTED")) {
             motionDetectLogic();
+        }
+        else if (data.toString().charAt(0) === 'T') {
+            conditionLogic(data.toString());
+            console.log("savedData")
         }
 
         //T=24.1/H=41/L=833
@@ -147,7 +152,7 @@ const server = net.createServer((socket) => {
 
 });
 
-const host = "192.168.214.98"; //ip
+const host = "192.168.1.95"; //ip
 const port = 23; //port
 
 server.listen(port, host, () => {
