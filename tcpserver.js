@@ -68,69 +68,7 @@ const server = net.createServer((socket) => {
         //Temp = 24.1
         //humidity = 41%
         //Light = 833
-        /*
-                receivedData = data.toString();
-        
-                let list = receivedData.split('/');
-        
-                console.log(list);
-        
-                let tempReading, humReading, lightReading;
-        
-                list.forEach(element => {
-        
-                    let [key, value] = element.split('=');
-                    value = parseFloat(value);
-        
-                    if (key == 'T') {
-                        tempReading = value;
-        
-                    }
-                    else if (key == 'H') {
-                        humReading = value;
-                    }
-                    else if (key == 'L') {
-                        lightReading = value;
-                    }
-                });
-        
-                console.log("temp", tempReading)
-                console.log("hum", humReading)
-                console.log("light", lightReading)
-        
-        
-                try {
-                    const response = await axios.post("http://localhost:3000/temp/post", {
-                        "temperature": tempReading
-                    });
-        
-                    console.log("Data sent to the endpoint:", response.data);
-                } catch (error) {
-                    console.error("Error sending data to the endpoint:", error);
-                }
-        
-                try {
-                    const response = await axios.post("http://localhost:3000/humid/posthumidity", {
-                        "measurment": humReading
-                    });
-        
-                    console.log("Data sent to the endpoint:", response.data);
-                } catch (error) {
-                    console.error("Error sending data to the endpoint:", error);
-                }
-        
-                try {
-                    const response = await axios.post("http://localhost:3000/light/post", {
-                        "lightLevel": lightReading
-                    });
-        
-                    console.log("Data sent to the endpoint:", response.data);
-                } catch (error) {
-                    console.error("Error sending data to the endpoint:", error);
-                }
-        
-        
-        */
+
 
     });
 

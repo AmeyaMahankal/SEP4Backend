@@ -1,9 +1,9 @@
-const { tempConditionData } = require('../TCPDataAccess/ConditionsDataAcess')
+const { tempConditionData, humidityConditionData, lightConditionData } = require('../TCPDataAccess/ConditionsDataAcess')
 
 function conditionLogic(receivedData) {
     let list = receivedData.split('/');
 
-    console.log(list);
+
 
     let tempReading, humReading, lightReading;
 
@@ -24,13 +24,11 @@ function conditionLogic(receivedData) {
         }
     });
 
-    console.log("temp reading is " + tempReading);
-    console.log("hum reading is " + humReading);
-    console.log("light reading is " + lightReading);
+
 
     tempConditionData(tempReading);
-    //humidityConditionData(humReading);
-    //lightConditionData(lightReading);
+    humidityConditionData(humReading);
+    lightConditionData(lightReading);
 
 
 }

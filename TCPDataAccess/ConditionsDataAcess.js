@@ -1,7 +1,7 @@
 
 const temperatureModel = require('../model/TemperatureModel');
-//const humidityModel = require('../model/HumidityModel');
-//const lightModel = require('../model/LightLevelModel');
+const humidityModel = require('../model/HumidityModel');
+const lightModel = require('../model/LightLevelModel');
 
 async function tempConditionData(tempReading) {
 
@@ -11,30 +11,32 @@ async function tempConditionData(tempReading) {
 
     const dataToSave = await tdata.save();
 
-    console.log("Saved temp");
 }
 
-/*
+
 async function humidityConditionData(humReading) {
 
     const timestamp = Date.now();
 
-    const hdata = new humidityModel({ humReading, timestamp });
+    const hdata = new humidityModel({ measurment: humReading, time: timestamp });
 
     const dataToSave = await hdata.save();
+
 }
 
 async function lightConditionData(lightReading) {
 
     const timestamp = Date.now();
 
-    const ldata = new lightModel({ lightReading, timestamp });
+    const ldata = new lightModel({ lightLevel: lightReading, time: timestamp });
 
     const dataToSave = await ldata.save();
 
 }
-*/
+
 
 module.exports = {
-    tempConditionData
+    tempConditionData,
+    humidityConditionData,
+    lightConditionData
 };
