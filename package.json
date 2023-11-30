@@ -4,7 +4,7 @@
   "description": "test",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js & node tcpserver.js ",
+    "start": "node index.js",
     "test": "jest"
   },
   "author": "",
