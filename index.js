@@ -2,10 +2,9 @@ require('dotenv').config();
 const cors = require('cors');
 const express = require('express')
 const mongoose = require('mongoose')
-const mongoString = process.env.DATABASE_URL
-
-mongoose.connect(mongoString);
-const database = mongoose.connection
+const mongoString = process.env.DATABASE_URL;
+mongoose.connect(mongoString, { useNewUrlParser: true, useUnifiedTopology: true });
+const database = mongoose.connection;
 
 database.on('error', (error) => {
     console.log(error)

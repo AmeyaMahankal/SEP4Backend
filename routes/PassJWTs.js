@@ -35,4 +35,32 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
+
+router.patch('/update-password', async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    // Verify the old password first
+    const foundPassword = await PassModel.findOne({ password: oldPassword });
+
+    if (!foundPassword) {
+      return res.status(401).json({ error: 'Invalid Old Password' });
+    }
+
+    // Update the password
+    foundPassword.password = newPassword;
+    await foundPassword.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
 module.exports = router;
