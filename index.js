@@ -26,6 +26,7 @@ const motion = require('./routes/Motions');
 const jwt = require('./routes/PassJWTs');
 const motdetect = require('./routes/MotionDetect');
 const artifacts = require('./routes/Artifacts');
+const pins = require('./routes/PinCodes');
 
 app.use('/temp', temps)
 app.use('/light', lights)
@@ -34,7 +35,7 @@ app.use('/motion', motion)
 app.use('/jwt', jwt)
 app.use('/motdetect', motdetect)
 app.use('/artifacts', artifacts)
-
+app.use('/pins', pins)
 
 
 app.get("/", (req, res) => {
