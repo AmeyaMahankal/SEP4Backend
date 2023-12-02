@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const net = require('net'); 
 
-const PinCodeModel = require('../model/PinCodeModel'); 
+const PinCodeModel = require('../model/PinCodeModel');
+const MotionModel= require('../model/MotionModel') 
 
 router.post('/comparePin', async (req, res) => {
     const handleTcpClient = () => {
@@ -28,10 +29,30 @@ router.post('/comparePin', async (req, res) => {
                 console.log('Connection to TCP server closed');
             });
 
-            client.on('data', (data) => {
+            client.on('data', async (data) => {
                 console.log('Received data from TCP server:', data.toString());
-
-                client.end();
+                if (data == "SSCRemote") {
+                    try {
+    
+                        const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
+    
+                        if (latestMotionData) {
+                            latestMotionData.detection = !latestMotionData.detection;
+                            await latestMotionData.save();
+    
+                           // res.json({ message: 'Motion status updated successfully' });
+                        } else {
+                            res.status(404).json({ message: 'No data to update' });
+                        }
+                    } catch (error) {
+                        res.status(500).json({ message: error.message });
+                    }
+    
+                    client.end();
+    
+                };
+                
+                
 
                 resolve(data.toString());
             });
