@@ -65,4 +65,87 @@ router.post('/comparePin', async (req, res) => {
     }
 });
 
+
+
+router.patch('/update-pin', async (req, res) => {
+  try {
+      const newPinCode = req.body.pinCode;
+
+      if (!newPinCode) {
+          return res.status(400).json({ error: 'Please provide a new pin code.' });
+      }
+
+      // TCP client logic directly within the endpoint
+      const client = new net.Socket();
+      const serverAddress = '127.0.0.1';
+      const serverPort = 23;
+
+      const handleTcpClient = () => {
+          return new Promise((resolve, reject) => {
+              client.connect(serverPort, serverAddress, () => {
+                  console.log('Connected to TCP server');
+
+                  // Send the new pin code to the server
+                  client.write(`update pincode to ${newPinCode}`);
+              });
+
+              client.on('error', (error) => {
+                  console.error('Error in TCP socket connection:', error);
+                  reject(error);
+
+                  client.end();
+              });
+
+              client.on('close', () => {
+                  console.log('Connection to TCP server closed');
+                  resolve('TCP request successful');
+              });
+
+              client.on('data', (data) => {
+                  console.log('Received data from TCP server:', data.toString());
+                  console.log('s');
+
+                  // Check if the received message is "updated"
+                  if (data.toString().trim() === 'updated') {
+                      resolve('Acknowledgment received');
+                  } else {
+                      reject('Invalid acknowledgment');
+                  }
+              });
+          });
+      };
+
+      try {
+          // Wait for the acknowledgment from the server
+          await handleTcpClient();
+
+          // Update the PIN code in the database
+          const updatedPin = await PinCodeModel.findOneAndUpdate({}, { pinCode: newPinCode }, { new: true });
+
+          if (!updatedPin) {
+              return res.status(404).json({ error: 'No pin code found in the database.' });
+          }
+
+          res.json({ message: 'Pin code updated successfully', updatedPin, confirmation: 'Pin code updated and acknowledged by the server' });
+      } catch (error) {
+          // Handle errors from the TCP client or database update
+          console.error('Error:', error);
+          res.status(500).json({ error: error.message });
+      }
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router;
