@@ -58,11 +58,33 @@ const server = net.createServer((socket) => {
         }
         else if (data.includes("MOTION DETECTED")) {
             motionDetectLogic();
+
+        } else  if (data.includes("update pincode to")) {
+            // Extract the new pin code from the message
+            const newPinCode = data.toString().replace("update pincode to", "").trim();
+            // Broadcast the new pin code to all connected clients
+            clients.forEach((client) => {
+                if (client !== socket) {
+                    client.write(`New pin code: ${newPinCode}`);
+                }
+            });
+        } else if (data.toString().includes("updated")) {
+            // If the client sends "updated," broadcast it to all connected clients
+            clients.forEach((client) => {
+                if (client !== socket) {
+                    client.write("updated");
+                }
+            });
+            // Close the communication with the client
+            socket.end();
+        } 
+
         }
         else if (data.toString().charAt(0) === 'T') {
             conditionLogic(data.toString());
             console.log("savedData")
         }
+
 
         //T=24.1/H=41/L=833
         //Temp = 24.1
@@ -90,7 +112,10 @@ const server = net.createServer((socket) => {
 
 });
 
+
+
 const host = "192.168.1.95"; //ip
+
 const port = 23; //port
 
 server.listen(port, host, () => {
