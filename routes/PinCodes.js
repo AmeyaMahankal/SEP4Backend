@@ -31,7 +31,7 @@ router.post('/comparePin', async (req, res) => {
 
             client.on('data', async (data) => {
                 console.log('Received data from TCP server:', data.toString());
-                if (data == "SSCRemote") {
+                if (data.includes("SSCRemote")) {
                     try {
     
                         const latestMotionData = await MotionModel.findOne().sort({ time: -1 });

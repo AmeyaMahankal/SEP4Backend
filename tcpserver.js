@@ -58,18 +58,17 @@ const server = net.createServer((socket) => {
       // Broadcast the new pin code to all connected clients
       clients.forEach((client) => {
         if (client !== socket) {
-          client.write(`New pin code: ${newPinCode}`);
+          client.write(`ChangePIN=${newPinCode}`);
         }
       });
-    } else if (data.toString().includes("updated")) {
+    } else if (data.toString().includes("NewPIN")) {
       // If the client sends "updated," broadcast it to all connected clients
       clients.forEach((client) => {
         if (client !== socket) {
           client.write("updated");
         }
       });
-      // Close the communication with the client
-      socket.end();
+   
     } else if (data.toString().charAt(0) === "T") {
       conditionLogic(data.toString());
       console.log("savedData");
