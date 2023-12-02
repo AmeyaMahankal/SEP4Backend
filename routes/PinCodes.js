@@ -9,7 +9,7 @@ router.post('/comparePin', async (req, res) => {
     const handleTcpClient = () => {
         return new Promise((resolve, reject) => {
             const client = new net.Socket();
-            const serverAddress = '127.0.0.1';
+            const serverAddress = '192.168.214.90';
             const serverPort = 23;
 
             client.connect(serverPort, serverAddress, () => {
@@ -98,7 +98,7 @@ router.patch('/update-pin', async (req, res) => {
 
       // TCP client logic directly within the endpoint
       const client = new net.Socket();
-      const serverAddress = '127.0.0.1';
+      const serverAddress = '192.168.214.90';
       const serverPort = 23;
 
       const handleTcpClient = () => {
