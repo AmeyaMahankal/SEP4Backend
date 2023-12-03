@@ -6,7 +6,7 @@ const artifactService = require("../services/ArtifactService");//check service n
 
 const router = express.Router();
 
-router.get('/getLatestReadingWarnings', async (req, res) => {
+router.get('/getWarnings', async (req, res) => {
     try {
         const artifacts = artifactService.getAllArtifacts(); //check method name
         const hum = HumidityService.getAllHumidities()[0];
