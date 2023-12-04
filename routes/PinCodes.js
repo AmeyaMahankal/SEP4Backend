@@ -6,22 +6,20 @@ const PinCodeModel = require('../model/PinCodeModel');
 const MotionModel= require('../model/MotionModel') 
 
 router.post('/comparePin', async (req, res) => {
-    const handleTcpClient = () => {
-        return new Promise((resolve, reject) => {
-            const client = new net.Socket();
-            const serverAddress = '192.168.214.90';
-            const serverPort = 23;
+    const handleTcpClient = async () => {
+        const client = new net.Socket();
+        const serverAddress = '10.27.11.3';
+        const serverPort = 23;
 
+        return new Promise((resolve, reject) => {
             client.connect(serverPort, serverAddress, () => {
                 console.log('Connected to TCP server');
-
                 client.write('ChangeSecurityStatus');
             });
 
             client.on('error', (error) => {
                 console.error('Error in TCP socket connection:', error);
                 reject(error);
-
                 client.end();
             });
 
@@ -33,26 +31,20 @@ router.post('/comparePin', async (req, res) => {
                 console.log('Received data from TCP server:', data.toString());
                 if (data.includes("SSCRemote")) {
                     try {
-    
                         const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
-    
+
                         if (latestMotionData) {
                             latestMotionData.detection = !latestMotionData.detection;
                             await latestMotionData.save();
-    
-                           // res.json({ message: 'Motion status updated successfully' });
                         } else {
                             res.status(404).json({ message: 'No data to update' });
                         }
                     } catch (error) {
                         res.status(500).json({ message: error.message });
                     }
-    
+
                     client.end();
-    
-                };
-                
-                
+                }
 
                 resolve(data.toString());
             });
@@ -72,12 +64,19 @@ router.post('/comparePin', async (req, res) => {
             return res.status(404).json({ error: 'No pin code found in the database.' });
         }
 
-        const isMatch = enteredPin == storedPin.pinCode; 
+        const isMatch = enteredPin == storedPin.pinCode;
 
         if (isMatch) {
             const tcpResponse = await handleTcpClient();
 
-            res.json({ message: 'Unlocked!', tcpResponse });
+            const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
+
+            if (latestMotionData) {
+                const responseMessage = latestMotionData.detection ? 'Unlocked!' : 'Locked!';
+                res.json({ message: responseMessage, tcpResponse });
+            } else {
+                res.status(404).json({ message: 'No motion data found.' });
+            }
         } else {
             res.status(401).json({ error: 'Pin codes do not match.' });
         }
@@ -89,79 +88,70 @@ router.post('/comparePin', async (req, res) => {
 
 
 router.patch('/update-pin', async (req, res) => {
-  try {
-      const newPinCode = req.body.pinCode;
+    try {
+        const newPinCode = req.body.pinCode;
 
-      if (!newPinCode) {
-          return res.status(400).json({ error: 'Please provide a new pin code.' });
-      }
+        if (!newPinCode) {
+            return res.status(400).json({ error: 'Please provide a new pin code.' });
+        }
 
-      // TCP client logic directly within the endpoint
-      const client = new net.Socket();
-      const serverAddress = '192.168.214.90';
-      const serverPort = 23;
+        // TCP client logic directly within the endpoint
+        const client = new net.Socket();
+        const serverAddress = '10.27.11.3';
+        const serverPort = 23;
 
-      const handleTcpClient = () => {
-          return new Promise((resolve, reject) => {
-              client.connect(serverPort, serverAddress, () => {
-                  console.log('Connected to TCP server');
+        const handleTcpClient = () => {
+            return new Promise((resolve, reject) => {
+                client.connect(serverPort, serverAddress, () => {
+                    console.log('Connected to TCP server');
 
-                  // Send the new pin code to the server
-                  client.write(`update pincode to ${newPinCode}`);
-              });
+                    // Send the new pin code to the server
+                    client.write(`update pincode to ${newPinCode}`);
+                });
 
-              client.on('error', (error) => {
-                  console.error('Error in TCP socket connection:', error);
-                  reject(error);
+                client.on('error', (error) => {
+                    console.error('Error in TCP socket connection:', error);
+                    reject(error);
 
-                  client.end();
-              });
+                    client.end();
+                });
 
-              client.on('close', () => {
-                  console.log('Connection to TCP server closed');
-                  resolve('TCP request successful');
-              });
+                client.on('close', () => {
+                    console.log('Connection to TCP server closed');
+                    resolve('TCP request successful');
+                });
 
-              client.on('data', (data) => {
-                  console.log('Received data from TCP server:', data.toString());
-                  console.log('s');
+                client.on('data', (data) => {
+                    console.log('Received data from TCP server:', data.toString());
+                    console.log('s');
 
-                  // Check if the received message is "updated"
-                  if (data.toString().trim() === 'updated') {
-                      resolve('Acknowledgment received');
-                  } else {
-                      reject('Invalid acknowledgment');
-                  }
-              });
-          });
-      };
+                    // Check if the received message is "updated"
+                    if (data.toString().trim().includes('updated')) {
+                        resolve('Acknowledgment received');
+                    } else {
+                        reject('Invalid acknowledgment');
+                    }
+                });
+            });
+        };
 
-      try {
-          // Wait for the acknowledgment from the server
-          await handleTcpClient();
+        try {
+            // Wait for the acknowledgment from the server
+            await handleTcpClient();
 
-          // Update the PIN code in the database
-          const updatedPin = await PinCodeModel.findOneAndUpdate({}, { pinCode: newPinCode }, { new: true });
+            // Database update code removed
 
-          if (!updatedPin) {
-              return res.status(404).json({ error: 'No pin code found in the database.' });
-          }
-
-          res.json({ message: 'Pin code updated successfully', updatedPin, confirmation: 'Pin code updated and acknowledged by the server' });
-      } catch (error) {
-          // Handle errors from the TCP client or database update
-          console.error('Error:', error);
-          res.status(500).json({ error: error.message });
-      }
-  } catch (error) {
-      res.status(500).json({ error: error.message });
-  }
+            // Respond to the client without updating the database
+            res.json({ message: 'Pin code update acknowledged by the server' });
+        } catch (error) {
+            // Handle errors from the TCP client or database update
+            console.error('Error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
-
-
-
-
-
 
 
 

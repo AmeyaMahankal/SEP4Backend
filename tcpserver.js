@@ -6,6 +6,7 @@ const mongoString = process.env.DATABASE_URL;
 const motionDetectLogic = require("./TCPLogic/MotionDetectionApplication");
 const conditionLogic = require("./TCPLogic/ConditionsApplication");
 const MotionModel = require("./model/MotionModel");
+const PinCodeModel = require('./model/PinCodeModel');
 
 mongoose.connect(mongoString);
 const database = mongoose.connection;
@@ -62,14 +63,31 @@ const server = net.createServer((socket) => {
         }
       });
     } else if (data.toString().includes("NewPIN")) {
-      // If the client sends "updated," broadcast it to all connected clients
-      clients.forEach((client) => {
-        if (client !== socket) {
-          client.write("updated");
-        }
-      });
-   
-    } else if (data.toString().charAt(0) === "T") {
+      const numbers = data.toString().match(/\d+/g);
+    
+      // Check if numbers were found
+      if (numbers) {
+        // Print the separated numbers
+        console.log("Separated numbers:", numbers.join());
+    
+        // Assuming you want to update the pin code for the first document in the collection
+        const filter = {}; // You might want to add a specific condition here if needed
+        const update = { pinCode: numbers.join()};
+        const options = { new: true };
+    
+        const updatedPin = await PinCodeModel.findOneAndUpdate(filter, update, options);
+        console.log("Updated pin code:", updatedPin);
+        clients.forEach((client) => {
+          if (client !== socket) {
+            client.write("updated");
+          }
+        });
+      }
+      
+
+
+    }
+     else if (data.toString().charAt(0) === "T") {
       conditionLogic(data.toString());
       console.log("savedData");
     }
@@ -95,7 +113,7 @@ const server = net.createServer((socket) => {
   });
 });
 
-const host = "192.168.214.90"; //ip
+const host = "10.27.11.3"; //ip
 
 const port = 23; //port
 
