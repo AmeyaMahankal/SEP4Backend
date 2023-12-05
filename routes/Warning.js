@@ -1,43 +1,49 @@
 const express = require('express');
-const TemperatureService = require('../model/TemperatureService');
-const HumidityService = require('../model/HumidityService');
-const LightService = require('../model/LightService');
+const TemperatureService = require('../services/TemperatureService');
+const HumidityService = require('../services/HumidityService');
+const LightService = require('../services/LightLevelService');
 const artifactService = require("../services/ArtifactService");//check service name
+
 
 const router = express.Router();
 
 router.get('/getWarnings', async (req, res) => {
     try {
-        const artifacts = artifactService.getAllArtifacts(); //check method name
-        const hum = HumidityService.getAllHumidities()[0];
-        const temp = TemperatureService.getAllTemperatures()[0];
-        const light = LightService.getAllLightLevels()[0];
-        const warnings = [];
+        const artifacts = await artifactService.getAllArtifacts(); //check method name
+        const hum = (await HumidityService.getAllHumidities())[0].measurment;
+        const temp = (await TemperatureService.getAllTemperatures())[0].temperature;
+        const light = (await LightService.getAllLightLevels())[0].lightLevel;
+
+        const warningObjects = [];
 
         artifacts.forEach(artefact => {
+            let artefactWarning = "";
             let name = artefact.name;
             if (temp > artefact.maxTemp) {
-                warning.push("Artefact " + name + ": Temperature is too high!");
-            } 
+                artefactWarning += "Temperature is too high!";
+            }
             else if (temp < artefact.minTemp) {
-                warning.push("Artefact " + name + ": Temperature is too low!");
-            } 
-            else if (hum > artefact.maxHumidity) {
-                warning.push("Artefact " + name + ": Humidity is too high!");
+                artefactWarning += " Temperature is too low!";
+            }
+
+            if (hum > artefact.maxHumidity) {
+                artefactWarning += " Humidity is too high!";
             }
             else if (hum < artefact.minHumidity) {
-                warning.push("Artefact " + name + ": Humidity is too low!");
+                artefactWarning += " Humidity is too low!";
             }
-            else if (light > artefact.maxLight) {
-                warning.push("Artefact " + name + ": Light levels too high!");
+            if (light > artefact.maxLight) {
+                artefactWarning += " Light levels is too high!";
             }
-        });
-        const warning="";
-        warnings.forEach(war => {
-            warning += war + " ";
+
+            warningObjects.push({
+                artefactId: artefact.id,
+                artefactName: name,
+                warning: artefactWarning
+            })
         });
 
-        res.json(warning);
+        res.json(warningObjects);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
