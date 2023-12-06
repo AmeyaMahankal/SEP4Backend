@@ -41,3 +41,4 @@ class ArtifactService {
 }
 
 module.exports = new ArtifactService();
+
