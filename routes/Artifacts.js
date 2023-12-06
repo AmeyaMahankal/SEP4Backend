@@ -1,57 +1,39 @@
 const express = require('express');
-const aModel = require('../model/ArtifactModel');
+const artifactService = require('../services/ArtifactService');
 
 const router = express.Router();
 
-// POST endpoint to save humidity data
 router.post('/postArtifact', async (req, res) => {
-  const data = new aModel({
-    name: req.body.name,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    minTemp: req.body.minTemp,
-    maxTemp: req.body.maxTemp,
-    maxLight: req.body.maxLight,
-    minHumidity: req.body.minHumidity,
-    maxHumidity: req.body.maxHumidity,
-  });
-
   try {
-    const dataToSave = await data.save();
+    const dataToSave = await artifactService.saveArtifact(req.body);
     res.status(200).json(dataToSave);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
-// GET endpoint to retrieve humidity data
 router.get('/getAllArtifacts', async (req, res) => {
-    try {
-      const allArtifacts = await aModel.find();
-      res.json(allArtifacts);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-
-router.delete('/deleteart/:name', async (req, res) => {
   try {
-      const name = req.params.name;
-      const data = await aModel.findOneAndDelete({ name: name });
-      if (data) {
-          res.send(`Document with name ${data.name} has been deleted.`);
-      } else {
-          res.status(404).send("Document not found.");
-      }
-  }
-  catch (error) {
-      res.status(400).json({ message: ("param is" + req.params.name) });
+    const allArtifacts = await artifactService.getAllArtifacts();
+    res.json(allArtifacts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
+router.delete('/deleteArtifact/:name', async (req, res) => {
+  try {
+    const name = req.params.name;
+    const deletedArtifact = await artifactService.deleteArtifact(name);
 
-
-
+    if (deletedArtifact) {
+      res.send(`Document with name ${deletedArtifact.name} has been deleted.`);
+    } else {
+      res.status(404).send("Document not found.");
+    }
+  } catch (error) {
+    res.status(400).json({ message: `Error: ${error.message}` });
+  }
+});
 
 module.exports = router;
