@@ -4,6 +4,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const mongoString = process.env.DATABASE_URL
 
+const startUp = require('./TCPDataAccess/StartupDataAccess')
+
 mongoose.connect(mongoString);
 const database = mongoose.connection
 
@@ -43,5 +45,6 @@ app.get("/", (req, res) => {
 })
 
 app.listen(3000, () => {
+    startUp();
     console.log(`Server started at ${3000}`)
 })
