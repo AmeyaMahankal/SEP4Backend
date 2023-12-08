@@ -27,10 +27,12 @@ spec:
   selector:
     app: my-app
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 3000
-    - protocol: TCP
+    - name: tcp
+      protocol: TCP
       port: 23
       targetPort: 23
   type: LoadBalancer
