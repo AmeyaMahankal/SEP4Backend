@@ -40,6 +40,12 @@ jobs:
           context: .
           push: true
           tags: gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }}
+
+      - name: Update Kubernetes Deployment
+        env:
+         GITHUB_SHA: ${{ github.sha }}
+        run: |
+          sed -i 's|gcr.io/sep4-backendcloud/sep4cloudtest:.*|gcr.io/sep4-backendcloud/sep4cloudtest:'"${GITHUB_SHA}"'|' ./.github/workflows/kubernetes-deployment.yaml
       
       - name: Deploy to GKE
         run: |
