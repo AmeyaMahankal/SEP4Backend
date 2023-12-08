@@ -28,7 +28,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
           project_id: sep4-backendcloud
-          service_account_key_file: ./secrets/sep4-backendcloud-106482590f6f.json
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
           export_default_credentials: true
 
       - name: Configure Google Cloud
@@ -43,7 +43,7 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy YOUR_SERVICE_NAME \
+          gcloud run deploy sep4-cloud-test \
             --image=gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }} \
             --platform=managed \
             --region=europe-north1 \
