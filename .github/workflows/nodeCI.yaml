@@ -39,12 +39,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: gcr.io/sep4-backendcloud/sep4CloudTest:${{ github.sha }}
+          tags: gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy YOUR_SERVICE_NAME \
-            --image=gcr.io/sep4-backendcloud/sep4CloudTest:${{ github.sha }} \
+            --image=gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }} \
             --platform=managed \
             --region=europe-north1 \
             --allow-unauthenticated
