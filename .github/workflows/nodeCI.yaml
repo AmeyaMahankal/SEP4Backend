@@ -40,11 +40,8 @@ jobs:
           context: .
           push: true
           tags: gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }}
-
-      - name: Deploy to Cloud Run
+      
+      - name: Deploy to GKE
         run: |
-          gcloud run deploy sep4-cloud-test \
-            --image=gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }} \
-            --platform=managed \
-            --region=europe-north1 \
-            --allow-unauthenticated
+          gcloud container clusters get-credentials sep4-cluster --zone=europe-north1
+          kubectl apply -f kubernetes-deployment.yaml
