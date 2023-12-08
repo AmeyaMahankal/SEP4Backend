@@ -42,6 +42,8 @@ app.get("/", (req, res) => {
     res.send("<h2>Express Server running on port 3000</h2>")
 })
 
-app.listen(3000, () => {
-    console.log(`Server started at ${3000}`)
-})
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Server started at ${port}`);
+});
