@@ -28,7 +28,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
           project_id: sep4-backendcloud
-          service_account_key: ./sep4-backendcloud-106482590f6f.json
+          service_account_key_file: ./secrets/sep4-backendcloud-106482590f6f.json
           export_default_credentials: true
 
       - name: Configure Google Cloud
