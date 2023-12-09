@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const net = require('net'); 
+const net = require('net');
 
 const PinCodeModel = require('../model/PinCodeModel');
-const MotionModel= require('../model/MotionModel') 
+const MotionModel = require('../model/MotionModel')
 
 router.post('/comparePin', async (req, res) => {
     const handleTcpClient = async () => {
         const client = new net.Socket();
-        const serverAddress = '10.27.11.3';
+        const serverAddress = '0.0.0.0';
         const serverPort = 23;
 
         return new Promise((resolve, reject) => {
@@ -97,7 +97,7 @@ router.patch('/update-pin', async (req, res) => {
 
         // TCP client logic directly within the endpoint
         const client = new net.Socket();
-        const serverAddress = '10.27.11.3';
+        const serverAddress = '0.0.0.0';
         const serverPort = 23;
 
         const handleTcpClient = () => {

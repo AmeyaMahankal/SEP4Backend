@@ -64,17 +64,17 @@ const server = net.createServer((socket) => {
       });
     } else if (data.toString().includes("NewPIN")) {
       const numbers = data.toString().match(/\d+/g);
-    
+
       // Check if numbers were found
       if (numbers) {
         // Print the separated numbers
         console.log("Separated numbers:", numbers.join());
-    
+
         // Assuming you want to update the pin code for the first document in the collection
         const filter = {}; // You might want to add a specific condition here if needed
-        const update = { pinCode: numbers.join()};
+        const update = { pinCode: numbers.join() };
         const options = { new: true };
-    
+
         const updatedPin = await PinCodeModel.findOneAndUpdate(filter, update, options);
         console.log("Updated pin code:", updatedPin);
         clients.forEach((client) => {
@@ -83,11 +83,11 @@ const server = net.createServer((socket) => {
           }
         });
       }
-      
+
 
 
     }
-     else if (data.toString().charAt(0) === "T") {
+    else if (data.toString().charAt(0) === "T") {
       conditionLogic(data.toString());
       console.log("savedData");
     }
@@ -113,7 +113,7 @@ const server = net.createServer((socket) => {
   });
 });
 
-const host = "10.27.11.3"; //ip
+const host = "0.0.0.0"; //ip
 
 const port = 23; //port
 
