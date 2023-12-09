@@ -18,7 +18,7 @@ class PincodeService {
             const isMatch = enteredPin == storedPin.pinCode;
 
             if (isMatch) {
-                const tcpResponse = await this.handleTcpClient('10.25.11.8', 23, 'ChangeSecurityStatus');
+                const tcpResponse = await this.handleTcpClient('0.0.0.0', 23, 'ChangeSecurityStatus');
 
                 const latestMotionData = await MotionModel.findOne().sort({ time: -1 });
 
@@ -44,7 +44,7 @@ class PincodeService {
                 throw new Error('Please provide a new pin code.');
             }
 
-            const tcpResponse = await this.handleTcpClient('10.25.11.8', 23, `update pincode to ${newPinCode}`);
+            const tcpResponse = await this.handleTcpClient('0.0.0.0', 23, `update pincode to ${newPinCode}`);
 
             // Database update code removed
 
