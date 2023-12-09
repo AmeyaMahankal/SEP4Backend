@@ -15,7 +15,7 @@ database.once('connected', () => {
 })
 
 const app = express();
-app.use(cors({ origin: 'https://museguard.github.io/muse-guard-sep/' })); 
+app.use(cors())
 app.use(express.json());
 
 const temps = require('./routes/Temperatures');
