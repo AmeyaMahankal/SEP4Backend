@@ -113,7 +113,7 @@ const server = net.createServer((socket) => {
   });
 });
 
-const host = "10.27.11.3"; //ip
+const host = "10.25.11.8"; //ip
 
 const port = 23; //port
 
