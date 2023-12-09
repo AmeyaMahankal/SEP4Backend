@@ -1,38 +1,33 @@
-// routes.js
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const PassModel = require('../model/PassModel');
+const PassService = require('../services/PassService');
 
 const router = express.Router();
 const secretKey = 'your-secret-key'; // Replace with a strong, unique secret key
+const passService = new PassService(secretKey);
 
-// Endpoint for user login with password
 router.post('/login', async (req, res) => {
-  const { password } = req.body; // Change from pin to password
+    const { password } = req.body;
 
-  try {
-    // Mock password verification (replace with actual password validation logic)
-    const foundPassword = await PassModel.findOne({ password });
-
-    if (foundPassword) {
-      const token = jwt.sign({ password: foundPassword.password }, secretKey, { expiresIn: '1h' });
-
-      // Automatically call the protected route using the generated token
-      jwt.verify(token, secretKey, (err, decoded) => {
-        if (err) {
-          return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        // Token is valid
-        res.json({ message: 'Login successful', token, protectedData: { password: decoded.password } });
-      });
-    } else {
-      res.status(401).json({ error: 'Invalid Password' });
+    try {
+        const result = await passService.login(password);
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+});
+
+router.patch('/update-password', async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    try {
+        await passService.verifyToken(req.headers.authorization); // Verify the token before updating the password
+        const result = await passService.updatePassword(oldPassword, newPassword);
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 module.exports = router;
