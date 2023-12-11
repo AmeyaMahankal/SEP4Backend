@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - devolopment
+      - Test-CloudDeploy
       
 jobs:
   build:
