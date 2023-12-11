@@ -44,7 +44,7 @@ metadata:
 spec:
   tls:
   - hosts:
-    - <34.88.237.151>
+    - 34.88.237.151
     secretName: sep4-secret
   rules:
   - host: ""
