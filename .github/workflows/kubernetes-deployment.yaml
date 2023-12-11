@@ -44,10 +44,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "34.88.237.151"  # Use a placeholder or fake domain
+    - 34.88.237.151
     secretName: sep4-secret
   rules:
-  - host: "34.88.237.151"  # Use the same placeholder or fake domain
+  - host: ""
     http:
       paths:
       - path: /
@@ -57,4 +57,3 @@ spec:
             name: my-app-service
             port:
               name: https
-
