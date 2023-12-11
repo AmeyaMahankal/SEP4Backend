@@ -44,10 +44,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "34.88.237.151"  
+    - "museguardsep.com"  # Use a placeholder or fake domain
     secretName: sep4-secret
   rules:
-  - host: "34.88.237.151"  
+  - host: "museguardsep.com"  # Use the same placeholder or fake domain
     http:
       paths:
       - path: /
@@ -57,3 +57,4 @@ spec:
             name: my-app-service
             port:
               name: https
+
