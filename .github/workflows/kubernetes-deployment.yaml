@@ -40,14 +40,14 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: your-ingress
+  name: my-ingress
 spec:
   tls:
   - hosts:
-    - 34.88.237.151
+    - 34.88.237.151 
     secretName: sep4-secret
   rules:
-  - host: ""
+  - host: 34.88.237.151  
     http:
       paths:
       - path: /
@@ -56,4 +56,4 @@ spec:
           service:
             name: my-app-service
             port:
-              name: https  # Use the name of the port in the service
+              name: https 
