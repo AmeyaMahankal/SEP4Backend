@@ -56,4 +56,4 @@ spec:
           service:
             name: my-app-service
             port:
-              number: 443  # Update the port to match the 'https' port in the service
+              number: 3000  # Update to match the targetPort of my-app-service
