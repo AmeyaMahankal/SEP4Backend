@@ -24,7 +24,7 @@ class MotionService {
 
   async updateMotionStatus() {
     const client = new net.Socket();
-    const serverAddress = '192.168.214.98';
+    const serverAddress = '0.0.0.0';
     const serverPort = 23;
 
     return new Promise((resolve, reject) => {

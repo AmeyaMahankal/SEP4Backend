@@ -113,10 +113,11 @@ const server = net.createServer((socket) => {
   });
 });
 
-const host = "10.27.11.3"; //ip
+
+const host = "0.0.0.0"; //ip
+
 
 const port = 23; //port
-
 server.listen(port, host, () => {
   console.log(`Server is listening on ${host}:${port}`);
 });

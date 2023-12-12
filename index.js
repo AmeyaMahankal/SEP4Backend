@@ -2,10 +2,9 @@ require('dotenv').config();
 const cors = require('cors');
 const express = require('express')
 const mongoose = require('mongoose')
-const mongoString = process.env.DATABASE_URL
-
-mongoose.connect(mongoString);
-const database = mongoose.connection
+const mongoString = process.env.DATABASE_URL;
+mongoose.connect(mongoString, { useNewUrlParser: true, useUnifiedTopology: true });
+const database = mongoose.connection;
 
 database.on('error', (error) => {
     console.log(error)
@@ -44,6 +43,8 @@ app.get("/", (req, res) => {
     res.send("<h2>Express Server running on port 3000</h2>")
 })
 
-app.listen(3000, () => {
-    console.log(`Server started at ${3000}`)
-})
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Server started at ${port}`);
+});
