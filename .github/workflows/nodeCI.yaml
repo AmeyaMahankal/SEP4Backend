@@ -3,7 +3,7 @@ name: CI/CD for MuseGuard
 on:
   push:
     branches:
-      - devolopment
+      - master
       
 jobs:
   build:

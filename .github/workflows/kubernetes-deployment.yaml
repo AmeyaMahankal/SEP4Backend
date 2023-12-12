@@ -27,12 +27,33 @@ spec:
   selector:
     app: my-app
   ports:
-    - name: http
+    - name: https
       protocol: TCP
-      port: 80
+      port: 3000
       targetPort: 3000
     - name: tcp
       protocol: TCP
       port: 23
       targetPort: 23
   type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: your-ingress
+spec:
+  tls:
+  - hosts:
+    - 34.88.237.151
+    secretName: sep4-secret
+  rules:
+  - host: ""
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-app-service
+            port:
+              name: https
