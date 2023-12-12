@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-container
-        image: gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }}
+        image: gcr.io/sep4-cloud-deploy/sep4cloudtest:${{ github.sha }}
         ports:
         - containerPort: 3000
         - containerPort: 23
@@ -36,24 +36,3 @@ spec:
       port: 23
       targetPort: 23
   type: LoadBalancer
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: your-ingress
-spec:
-  tls:
-  - hosts:
-    - 34.88.237.151
-    secretName: sep4-secret
-  rules:
-  - host: ""
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: my-app-service
-            port:
-              name: https

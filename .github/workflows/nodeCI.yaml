@@ -27,7 +27,7 @@ jobs:
       - name: Setup Gcloud
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
-          project_id: sep4-backendcloud
+          project_id: sep4-cloud-deploy
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           export_default_credentials: true
 
@@ -39,13 +39,13 @@ jobs:
         with:
           context: .
           push: true
-          tags: gcr.io/sep4-backendcloud/sep4cloudtest:${{ github.sha }}
+          tags: gcr.io/sep4-cloud-deploy/sep4cloudtest:${{ github.sha }}
 
       - name: Update Kubernetes Deployment
         env:
          GITHUB_SHA: ${{ github.sha }}
         run: |
-          sed -i 's|gcr.io/sep4-backendcloud/sep4cloudtest:.*|gcr.io/sep4-backendcloud/sep4cloudtest:'"${GITHUB_SHA}"'|' ./.github/workflows/kubernetes-deployment.yaml
+          sed -i 's|gcr.io/sep4-cloud-deploy/sep4cloudtest:.*|gcr.io/sep4-cloud-deploy/sep4cloudtest:'"${GITHUB_SHA}"'|' ./.github/workflows/kubernetes-deployment.yaml
       
       - name: Deploy to GKE
         run: |
