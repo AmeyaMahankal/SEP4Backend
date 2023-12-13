@@ -21,7 +21,7 @@ router.patch('/update-password', async (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
     try {
-        await passService.verifyToken(req.headers.authorization); // Verify the token before updating the password
+       
         const result = await passService.updatePassword(oldPassword, newPassword);
         res.json(result);
     } catch (error) {
